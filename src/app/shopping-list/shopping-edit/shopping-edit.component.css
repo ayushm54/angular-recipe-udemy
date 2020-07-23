@@ -1,0 +1,15 @@
+.actionButton {
+    margin-right: 5px;
+}
+
+.addButton {
+    background-color: #5cb85c;
+    border-color: #4cae4c;
+    color: #ffffff;
+}
+
+.deleteButton {
+    background-color: #d9534f;
+    border-color: #d43f3a;
+    color: #ffffff;
+}

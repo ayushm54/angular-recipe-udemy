@@ -1,0 +1,53 @@
+<div class="row">
+    <div class="col-xs-12">
+        <img [src]="recipe.imagePath" 
+        alt="{{ recipe.name }}}" 
+        class="img-responsive"
+        style="max-height: 300px;">
+    </div>
+</div>
+<div class="row">
+    <div class="col-xs-12">
+        <h1>{{ recipe.name }}</h1>
+    </div>
+</div>
+<div class="row">
+    <div class="col-xs-12">
+        <div class="btn-group" appDropdown>
+            <button
+            type="button"
+            class="btn dropdown-toggle" 
+            style="background-color: #3F51B5; color: white;">
+            Manage Recipes<span class="caret" style="margin-left: 5px;"></span></button>
+            <ul class="dropdown-menu">
+            <li><a (click)="addToShoppingList()">To shopping list</a></li>
+            <li><a (click)="onEditRecipe()">Edit Recipe</a></li>
+            <li><a (click)="deleteRecipe()">Delete Recipe</a></li>
+            </ul>
+        </div>
+
+        <!-- <button mat-raised-button color="primary"  [matMenuTriggerFor]="menu">
+            Manage Recipes<mat-icon>keyboard_arrow_down </mat-icon>
+        </button>
+        <mat-menu #menu="matMenu">
+            <button mat-menu-item>To shopping listq</button>
+            <button mat-menu-item>Edit Recipe</button>
+            <button mat-menu-item>Delete Recipe</button>
+        </mat-menu> -->
+    </div>
+</div>
+<div class="row">
+    <div class="col-xs-12">
+        {{ recipe.description }}
+    </div>
+</div>
+<div class="row">
+    <div class="col-xs-12">
+        <ul class="list-group">
+            <li class="list-group-item"
+            *ngFor="let ingredient of recipe.ingredients">
+                {{ ingredient.name }} - {{ ingredient.amount }}
+            </li>
+        </ul>
+    </div>
+</div>

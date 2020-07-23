@@ -1,0 +1,17 @@
+<mat-toolbar color="primary">
+    <span>Recipe Book</span>
+    <div class="mainOptions">
+        <a [routerLink]="['/recipes']" *ngIf="isAuthenticated"              routerLinkActive="activeLink">Recipes</a>
+        <a [routerLink]="['/auth']" *ngIf="!isAuthenticated" routerLinkActive="activeLink">Authenticate</a>
+        <a [routerLink]="['/shopping-list']" routerLinkActive="activeLink">Shopping List</a>
+    </div>
+    <span class="example-spacer"></span>
+    <button mat-icon-button *ngIf="isAuthenticated" [matMenuTriggerFor]="menu">
+        <mat-icon>more_vert</mat-icon>
+    </button>
+    <mat-menu #menu="matMenu">
+        <button mat-menu-item (click)="onSaveData()">Save Data</button>
+        <button mat-menu-item (click)="onFetchData()">Fetch Data</button>
+        <button mat-menu-item (click)="onLogout()">Log Out</button>
+    </mat-menu>
+</mat-toolbar>

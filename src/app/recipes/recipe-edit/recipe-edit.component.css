@@ -1,0 +1,8 @@
+input.ng-invalid.ng-touched ,textArea.ng-invalid.ng-touched {
+    border: 1px solid red;
+    background-color: #f9d9d9;
+}
+
+.previewImage {
+    height: 200px;
+}
