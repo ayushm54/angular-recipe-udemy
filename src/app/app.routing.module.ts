@@ -1,41 +1,40 @@
 import { NgModule } from '@angular/core';
-import { Routes, RouterModule } from '@angular/router';
-import { RecipesComponent } from './recipes/recipes.component';
-import { ShoppingListComponent } from './shopping-list/shopping-list.component';
-import { identifierModuleUrl } from '@angular/compiler';
-import { RecipeDetailComponent } from './recipes/recipe-detail/recipe-detail.component';
-import { RecipeStartComponent } from './recipes/recipe-start/recipe-start.component';
-import { RecipeEditComponent } from './recipes/recipe-edit/recipe-edit.component';
-import { RecipesResolverService } from './recipes/recipes-resolver.service';
-import { AuthComponent } from './auth/auth/auth.component';
-import { AuthGuard } from './auth/auth/auth.guard';
+import { Routes, RouterModule, PreloadAllModules } from '@angular/router';
 
 export const appRoutes: Routes = [
     { path: '', redirectTo: '/recipes', pathMatch: 'full' },
+    // loadChildren is used to implement lazy loading
+    // it would tell angular to load the recipes module
+    // only when we visit the recipes path
+    // the syntax for loadChildren property is
+    // first we point to the module file then
+    // we add a # and the Module class name
+    //{ path: 'recipes', loadChildren: './recipes/recipes.module#RecipesModule'}
+
+    // in new versions of angular we could use the below syntax
     {
-        path: 'recipes', component: RecipesComponent,
-        resolve: [RecipesResolverService],
-        canActivate: [AuthGuard],
-        children: [
-            { path: '', component: RecipeStartComponent },
-            { path: 'new', component: RecipeEditComponent },
-            {
-                path: ':id', component: RecipeDetailComponent,
-                resolve: [RecipesResolverService]
-            },
-            {
-                path: ':id/edit', component: RecipeEditComponent,
-                resolve: [RecipesResolverService]
-            }
-        ]
+        path: 'recipes',
+        loadChildren: () => import('./recipes/recipes.module').then(
+            importedModule => importedModule.RecipesModule
+        )
     },
-    { path: 'shopping-list', component: ShoppingListComponent },
-    { path: 'auth', component: AuthComponent }
+    {
+        path: 'shopping-list',
+        loadChildren: () => import('./shopping-list/shopping-list.module').then(
+            importedModule => importedModule.ShoppingListModule
+        )
+    },
+    {
+        path: 'auth',
+        loadChildren: () => import('./auth/auth.module').then(
+            importedModule => importedModule.AuthModule
+        )
+    }
 ];
 
 @NgModule({
     imports: [
-        RouterModule.forRoot(appRoutes)
+        RouterModule.forRoot(appRoutes, {preloadingStrategy: PreloadAllModules})
     ],
     exports: [RouterModule]
 })

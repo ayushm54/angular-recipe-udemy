@@ -1,5 +1,5 @@
 <mat-toolbar color="primary">
-    <span>Recipe Book</span>
+    <a style="cursor: pointer; font-size: 23px;">Recipe Book</a>
     <div class="mainOptions">
         <a [routerLink]="['/recipes']" *ngIf="isAuthenticated"              routerLinkActive="activeLink">Recipes</a>
         <a [routerLink]="['/auth']" *ngIf="!isAuthenticated" routerLinkActive="activeLink">Authenticate</a>
