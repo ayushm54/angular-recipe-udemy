@@ -5,6 +5,9 @@ import { catchError, tap } from 'rxjs/operators';
 import { User } from './user.model';
 import { Router } from '@angular/router';
 import { environment } from '../../environments/environment';
+import { Store } from '@ngrx/store';
+import * as fromApp from '../store/app.reducer';
+import * as fromAuth from './store/auth.actions';
 
 export interface AuthResponseData {
     kind: string;
@@ -20,12 +23,13 @@ export interface AuthResponseData {
 export class AuthService {
 
     // BehaviorSubject gives user access to previously emmited value as well
-    user = new BehaviorSubject<User>(null);
-    private sessionTimeOutTImer: any;
+    // user = new BehaviorSubject<User>(null);
+    private sessionTimeOutTimer: any;
 
     constructor(
         private http: HttpClient,
-        private router: Router
+        private router: Router,
+        private store: Store<fromApp.AppState>
     ) { }
 
     signUp(email: string, password: string): Observable<any> {
@@ -59,12 +63,13 @@ export class AuthService {
     }
 
     logout(): void{
-        this.user.next(null);
+        // this.user.next(null);
+        this.store.dispatch(new fromAuth.Logout());
         localStorage.removeItem('userData');
-        if (this.sessionTimeOutTImer) {
-            clearTimeout(this.sessionTimeOutTImer);
+        if (this.sessionTimeOutTimer) {
+            clearTimeout(this.sessionTimeOutTimer);
         }
-        this.router.navigate(['/auth']);
+        // this.router.navigate(['/auth']);
     }
 
     autoLogin(): void{
@@ -86,7 +91,14 @@ export class AuthService {
         );
 
         if (loadedUser.token) {
-            this.user.next(loadedUser);
+            // this.user.next(loadedUser);
+            this.store.dispatch(new fromAuth.AuthenticateSuccess({
+                email: loadedUser.email,
+                userId: loadedUser.id,
+                token: loadedUser.token,
+                expirationDate: new Date(userData._tokenExpirationDate),
+                redirect: false
+            }));
             // as soon as user logs in we initiate a auto log out timer
             const expirationDuration =
                 new Date(userData._tokenExpirationDate).getTime() - new Date().getTime();
@@ -97,9 +109,17 @@ export class AuthService {
     autoLogout(expirationDuration: number): void{
         // expirationDuration is the session timeout time in miliseconds
         // the setTimeout method initiates a timer
-        this.sessionTimeOutTImer = setTimeout(() => {
-            this.logout();
+        this.sessionTimeOutTimer = setTimeout(() => {
+            // this.logout();
+            this.store.dispatch(new fromAuth.Logout());
         }, expirationDuration);
+    }
+
+    clearAutoLogOutTimer(): void {
+        if (this.sessionTimeOutTimer) {
+            clearTimeout(this.sessionTimeOutTimer);
+            this.sessionTimeOutTimer = null;
+        }
     }
 
     private handleAuthentication(
@@ -112,7 +132,14 @@ export class AuthService {
 
         localStorage.setItem('userData', JSON.stringify(user));
 
-        this.user.next(user);
+        // this.user.next(user);
+        this.store.dispatch(new fromAuth.AuthenticateSuccess({
+            email,
+            userId: id,
+            token,
+            expirationDate: expiratioDate,
+            redirect: true
+        }));
         // as soon as user logs in we initiate a auto log out timer
         this.autoLogout(expiresIn * 1000);
     }

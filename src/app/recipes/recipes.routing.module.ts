@@ -16,14 +16,22 @@ export const appRoutes: Routes = [
         // resolve: [RecipesResolverService],
         canActivate: [AuthGuard],
         children: [
-            { path: '', component: RecipeStartComponent },
-            { path: 'new', component: RecipeEditComponent },
             {
-                path: ':id', component: RecipeDetailComponent,
+                path: '',
+                component: RecipeStartComponent
+            },
+            {
+                path: 'new',
+                component: RecipeEditComponent
+            },
+            {
+                path: ':id',
+                component: RecipeDetailComponent,
                 resolve: [RecipesResolverService]
             },
             {
-                path: ':id/edit', component: RecipeEditComponent,
+                path: ':id/edit',
+                component: RecipeEditComponent,
                 resolve: [RecipesResolverService]
             }
         ]
