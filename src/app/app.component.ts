@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Inject, PLATFORM_ID } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
 // import { AuthService } from './auth/auth.service';
 import { Store } from '@ngrx/store';
 import * as fromApp from './store/app.reducer';
@@ -13,12 +14,18 @@ export class AppComponent implements OnInit{
 
   constructor(
     // private authService: AuthService,
-    private store: Store<fromApp.AppState>
+    private store: Store<fromApp.AppState>,
+    @Inject(PLATFORM_ID) private platFormId // needed to work with angular univeral
   ) { }
 
   ngOnInit(): void{
     // this.authService.autoLogin();
-    this.store.dispatch(new AuthActions.AutoLogin());
+    // below we check if the code is running on browser
+    // bcoz first load will happen on server with angular universal
+    // and on server we cant use localstorage service
+    if (isPlatformBrowser(this.platFormId)) {
+      this.store.dispatch(new AuthActions.AutoLogin());
+    }
   }
 
 }

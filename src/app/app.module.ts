@@ -30,7 +30,7 @@ import { RecipeEffects } from './recipes/store/recipes.effects';
     HeaderComponent
   ],
   imports: [
-    BrowserModule,
+    BrowserModule.withServerTransition({ appId: 'serverApp' }),
     BrowserAnimationsModule,
     AppRoutingModule,
     MatToolbarModule,
